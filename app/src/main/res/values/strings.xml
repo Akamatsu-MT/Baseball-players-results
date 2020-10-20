@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">野球成績管理</string>
+    <string name="tab_text_1">投手</string>
+    <string name="tab_text_2">野手</string>
+    <string name="write">入力可能です</string>
+    <string name="dlg1_title">内容は？</string>
+    <string name="dlg_pst_btn">戻る</string>
+    <string name="name_text">名前入力</string>
+    <string name="number">背番号入力</string>
+    <string name="delete">すべて消去しますか？</string>
+    <string name="read">再読込</string>
+    <string name="Read">読み込みますか？</string>
+    <string name="save">成績を上書きしますか？</string>
+    <string name="dlg_title">打球方向を入力してください</string>
+</resources>
