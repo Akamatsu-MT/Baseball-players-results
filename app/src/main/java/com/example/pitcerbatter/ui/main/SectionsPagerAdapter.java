@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.pitcerbatter.Flag01;
 
 import com.example.pitcerbatter.Flag02;
+import com.example.pitcerbatter.Frag03;
 import com.example.pitcerbatter.R;
 
 /**
@@ -24,7 +25,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{
             R.string.tab_text_1,
-            R.string.tab_text_2
+            R.string.tab_text_2,
+            R.string.tab_text_3
     };
     private final Context mContext;
 
@@ -45,6 +47,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 fragment = new Flag02();
                 break;
+            case 2:
+                fragment = new Frag03();
+                break;
         }
         return fragment;
     }
@@ -57,7 +62,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 2 total pages.
-        return 2;
+        // Show 3 total pages.
+        return 3;
     }
 }

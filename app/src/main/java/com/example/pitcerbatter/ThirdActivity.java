@@ -31,14 +31,19 @@ public class ThirdActivity extends AppCompatActivity {
     int strikeout = 0;
     int fly=0;
     int bant=0;
-    private String Plname="";
+    String Plname="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third);
 
         Intent intent = getIntent();
-        Plname = intent.getStringExtra("playername");
+        try {
+            String[] member = intent.getStringArrayExtra("member");
+            Plname = member[0];
+        }catch(Exception e){
+            Plname = intent.getStringExtra("playername");
+        }
 
         final TextView tv = (TextView) findViewById(R.id.textView);
         tv.setText(Plname);
@@ -85,16 +90,16 @@ public class ThirdActivity extends AppCompatActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.button_1:
-                    buttonmove(1,1);
+                    strokes=buttonmove(1,1);
                     break;
                 case R.id.button_2:
-                    buttonmove(1,2);
+                    strokes=buttonmove(1,2);
                     break;
                 case R.id.button_3:
-                    buttonmove(1,3);
+                    strokes=buttonmove(1,3);
                     break;
                 case R.id.button_4:
-                    buttonmove(1,4);
+                    strokes=buttonmove(1,4);
                     break;
                 case R.id.fdball_button:
                     bats+=1;
@@ -102,7 +107,7 @@ public class ThirdActivity extends AppCompatActivity {
                     print();
                     break;
                 case R.id.out_button:
-                    buttonmove(0,0);
+                    strokes=buttonmove(0,0);
                     break;
                 case R.id.bant_button:
                     bats+=1;
@@ -132,74 +137,8 @@ public class ThirdActivity extends AppCompatActivity {
                     break;
             }
         }
-        public void buttonmove(final float h,final float i){
-            final CharSequence[] result = {"レフト方向", "センター方向", "ライト方向"};
-            new AlertDialog.Builder(ThirdActivity.this)
-                    .setTitle(R.string.dlg_title)
-                    .setItems(
-                            result,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,int which) {
-                                    switch(which){
-                                        case 0:
-                                            hitmove(h,i);
-                                            left+=1;
-                                            break;
-                                        case 1:
-                                            hitmove(h,i);
-                                            centor+=1;
-                                            break;
-                                        case 2:
-                                            hitmove(h,i);
-                                            right+=1;
-                                            break;
-                                    }
-                                    print();
-                                }
-                            }
-                    )
-                    .setPositiveButton(
-                            R.string.dlg_pst_btn,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            }
-                    )
-                    .show();
-        }
-        public void hitmove(float h,float i){
-            hit+=h;
-            bats+=1;
-            strokes+=1;
-            total_runs+=i;
-        }
-        public void print(){
-            final TextView tv = (TextView) findViewById(R.id.textView);
-            tv.setText(String.format("%.0f",bats) + "打席目"+
-                    "\n打率　：" + String.format("%.4f (%.0f/%.0f)", hit/strokes,hit,strokes) +
-                    "\n出塁率：" + String.format("%.4f (%.0f/%.0f)", (hit+fdball)/bats,(hit+fdball),bats) +
-                    "\n長打率：" + String.format("%.4f (%.0f/%.0f)", total_runs/strokes,total_runs,strokes) +
-                    "\nＯＰＳ：" + String.format("%.4f",(total_runs/strokes+((hit+fdball)/bats))) +
-                    "\n四死球：" + String.format("%.0f",fdball)+
-                    "個\n三振　：" + strikeout +
-                    "個\n犠打　：" + bant +
-                    "個\n犠飛　：" + fly +
-                    "個\n打球方向" +
-                    "\n左："+String.format("%4.2f", left*100/(left+centor+right)) +"%" +
-                    "\n中："+String.format("%4.2f", centor*100/(left+centor+right)) +"%" +
-                    "\n右："+String.format("%4.2f", right*100/(left+centor+right))+ "%"
-            );
-        }
         private void Alldel(String name){
             Context context = getApplicationContext();
-            try {
-                db.delete("Batters_table", "NAME=?", new String[]{name});
-            }catch(Exception e){
-                Toast.makeText(context,"データ削除に失敗しました",Toast.LENGTH_SHORT).show();
-            }
             if(helper == null){
                 helper = new TestOpenHelper(getApplicationContext());
             }
@@ -210,7 +149,20 @@ public class ThirdActivity extends AppCompatActivity {
             try {
                 ContentValues cv = new ContentValues();
                 cv.put("NAME", name);
-                db.insert("Batters_table", null, cv);
+                cv.put("bats", 0);
+                cv.put("strokes", 0);
+                cv.put("hit", 0);
+                cv.put("total_runs", 0);
+                cv.put("fdball", 0);
+                cv.put("strikeout", 0);
+                cv.put("bant", 0);
+                cv.put("fly", 0);
+                cv.put("left", 0);
+                cv.put("centor", 0);
+                cv.put("right", 0);
+
+                db.update("Batters_table", cv, "NAME=?", new String[]{name});
+                // Toast.makeText(context,"データの書き込みに成功しました",Toast.LENGTH_SHORT).show();
             }catch (Exception e){
                 Toast.makeText(context,"データ書き込みに失敗しました",Toast.LENGTH_SHORT).show();
             }
@@ -291,4 +243,67 @@ public class ThirdActivity extends AppCompatActivity {
             }
         }
     };
+    public float buttonmove(final float h,final float i){
+        final CharSequence[] result = {"レフト方向", "センター方向", "ライト方向"};
+        new AlertDialog.Builder(ThirdActivity.this)
+                .setTitle(R.string.dlg_title)
+                .setItems(
+                        result,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,int which) {
+                                switch(which){
+                                    case 0:
+                                        hitmove(h,i);
+                                        left+=1;
+                                        break;
+                                    case 1:
+                                        hitmove(h,i);
+                                        centor+=1;
+                                        break;
+                                    case 2:
+                                        hitmove(h,i);
+                                        right+=1;
+                                        break;
+                                }
+                                print();
+                            }
+                        }
+                )
+                .setPositiveButton(
+                        R.string.dlg_pst_btn,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }
+                )
+                .show();
+        return strokes;
+    }
+    public void hitmove(float h,float i){
+        hit+=h;
+        bats+=1;
+        strokes+=1;
+        total_runs+=i;
+    }
+    public void print(){
+        final TextView tv = (TextView) findViewById(R.id.textView);
+        tv.setText(Plname +"\n\n"+
+                String.format("通算%.0f",bats) + "打席"+
+                "\n打率　：" + String.format("%.4f (%.0f/%.0f)", hit/strokes,hit,strokes) +
+                "\n出塁率：" + String.format("%.4f (%.0f/%.0f)", (hit+fdball)/bats,(hit+fdball),bats) +
+                "\n長打率：" + String.format("%.4f (%.0f/%.0f)", total_runs/strokes,total_runs,strokes) +
+                "\nＯＰＳ：" + String.format("%.4f",(total_runs/strokes+((hit+fdball)/bats))) +
+                "\n四死球：" + String.format("%.0f",fdball)+
+                "個\n三振　：" + strikeout +
+                "個\n犠打　：" + bant +
+                "個\n犠飛　：" + fly +
+                "個\n打球方向" +
+                "\n左："+String.format("%4.2f", left*100/(left+centor+right)) +"%" +
+                "\n中："+String.format("%4.2f", centor*100/(left+centor+right)) +"%" +
+                "\n右："+String.format("%4.2f", right*100/(left+centor+right))+ "%"
+        );
+    }
 }

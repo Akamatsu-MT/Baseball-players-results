@@ -490,8 +490,8 @@ public class SecondActivity extends AppCompatActivity{
                         }
                 )
                 .show();
-
     }
+
     private void readData(String name){
         Context context = getApplicationContext();
         if(helper == null){

@@ -30,6 +30,11 @@
             android:label="野手成績入力"
             tools:ignore="Instantiatable">
         </activity>
+        <activity
+            android:name=".Re_ThirdActivity"
+            android:label="スタメン成績入力"
+            tools:ignore="Instantiatable">
+        </activity>
     </application>
 
 </manifest>
