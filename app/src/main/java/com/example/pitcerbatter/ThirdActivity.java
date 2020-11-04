@@ -176,7 +176,6 @@ public class ThirdActivity extends AppCompatActivity {
             if(db == null){
                 db = helper.getReadableDatabase();
             }
-          //  final TextView tv = (TextView) findViewById(R.id.textView);
             try {
 
                 String sql = "select NAME,bats,strokes,hit,total_runs,fdball,strikeout,bant,fly,left,centor,right from Batters_table where NAME = ?;";
@@ -233,7 +232,7 @@ public class ThirdActivity extends AppCompatActivity {
                 cv.put("right", right);
                 try{
                     db.update("Batters_table", cv, "NAME=?", new String[]{com});
-                    Toast.makeText(context,"データの上書きに成功しました",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"データの上書きに成功しました",Toast.LENGTH_SHORT).show();
                 }catch (Exception e) {
                     db.insert("Batters_table", null, cv);
                     Toast.makeText(context,"データの書き込みに成功しました",Toast.LENGTH_SHORT).show();
